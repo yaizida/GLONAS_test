@@ -3,7 +3,6 @@ import math
 import requests
 
 
-
 class VehicleManager:
     def __init__(self):
         self.url = 'https://test.tspb.su/test-task/vehicles'
@@ -64,28 +63,31 @@ class VehicleManager:
         all_vehicles = requests.get(self.url).json()
         list_coordinates = []
         for i in all_vehicles:
-            list_coordinates.append((i['id'], i['latitude'], i['longitude']))
+            list_coordinates.append(
+                {'id': i['id'],
+                 'lat': i['latitude'],
+                 'lon': i['longitude']}
+            )
         return list_coordinates
 
-    def nearest_vehicle(self, id: int) -> str:
-        vechile = requests.get(self.url + '/' + str(id))
-        coordinates = vechile.json()['latitude'], vechile.json()['longitude']
-        nearest_distance = float('inf')
-        nearest_index = -1
-        for index, (machine_lon, machine_lat) in enumerate(self.get_all_coordinates()):
-            distance = self.distance()
-            if distance < nearest_distance:
-                nearest_distance = distance
-                nearest_index = index
-        return coordinates
-
-
+    def nearest_vehicle(self, target_id: int):
+        data = self.get_all_coordinates()
+        id_to_data = {d['id']: d for d in data}
+        target_machine = id_to_data[target_id]
+        target_lat = target_machine['lat']
+        target_lon = target_machine['lon']
+        nearest_object = min(
+            data, key=lambda obj: self.distance(
+                (target_lat, target_lon),
+                (obj['lat'], obj['lon']))
+            )
+        return nearest_object
 
 
 vechile = VehicleManager()
 
-print(vechile.get_vehicles())
-print(vechile.filter_vehicles(params={'name': 'BMW'}))
-print(vechile.get_vehicle(5))
-print(vechile.get_all_coordinates())
+# print(vechile.get_vehicles())
+# print(vechile.filter_vehicles(params={'name': 'BMW'}))
+# print(vechile.get_vehicle(5))
+
 print(vechile.nearest_vehicle(5))

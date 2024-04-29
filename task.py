@@ -21,8 +21,8 @@ class Vehicle:
 
 
 class VehicleManager:
-    def __init__(self):
-        self.url = 'https://test.tspb.su/test-task/vehicles'
+    def __init__(self, url: str) -> None:
+        self.url = url
 
     def vehicle_to_object(self, vehicle_dict):
         """Начал писать работу с объектами ДОРАБОТАЙ!"""
@@ -33,12 +33,6 @@ class VehicleManager:
         vehicles = response.json()
 
         return [self.vehicle_to_object(vehicle) for vehicle in vehicles]
-
-    def get_vehicles(self) -> list:
-        response = requests.get(self.url)
-        vehicles = response.json()
-
-        return [self.vehicle_to_string(vehicle) for vehicle in vehicles]
 
     def vehicle_to_string(self, vehicle) -> list:
         return '<Vechicle: {} {} {} {} {}>'.format(
@@ -51,15 +45,16 @@ class VehicleManager:
 
     def filter_vehicles(self, params: dict) -> list:
         vechiles = []
-        for vechile in self.get_vehicles():
-            for param in params.values():
-                if param in vechile:
+        for vechile in self.get_vehicles_objects():
+            for param in vechile.__dict__.values():
+                if param in params.values():
                     vechiles.append(vechile)
+
         return vechiles
 
-    def get_vehicle(self, id: int) -> str:
+    def get_vehicle(self, id: int) -> Vehicle:
         response = requests.get(self.url + '/' + str(id))
-        return self.vehicle_to_string(response.json())
+        return self.vehicle_to_object(response.json())
 
     def append_vehicle(self, vehicle: dict) -> None:
         requests.post(self.url, json=vehicle)
@@ -112,13 +107,4 @@ class VehicleManager:
         return nearest_object
 
 
-vechile = VehicleManager()
-
-# print(vechile.get_vehicles())
-# print(vechile.filter_vehicles(params={'name': 'BMW'}))
-# print(vechile.get_vehicle(5))
-
-print(vechile.get_vehicles_objects())
-print(vechile.nearest_vehicle(5))
-obj = Vehicle(4, 'BMW', 'X5', 'Red', '2020', '10000', 9.935622, 30.32605)
-print(obj.__dict__)
+vechile = VehicleManager('https://test.tspb.su/test-task/vehicles')

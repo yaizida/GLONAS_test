@@ -12,8 +12,8 @@ class Vehicle:
     color: str
     year: int
     price: int
-    lat: float
-    lon: float
+    latitude: float
+    longitude: float
 
     def __str__(self):
         return (f'<Vehicle: {self.name} {self.model} ' +
@@ -24,9 +24,20 @@ class VehicleManager:
     def __init__(self):
         self.url = 'https://test.tspb.su/test-task/vehicles'
 
+    def vehicle_to_object(self, vehicle_dict):
+        """Начал писать работу с объектами ДОРАБОТАЙ!"""
+        return Vehicle(**vehicle_dict)
+
+    def get_vehicles_objects(self) -> list[Vehicle]:
+        response = requests.get(self.url)
+        vehicles = response.json()
+
+        return [self.vehicle_to_object(vehicle) for vehicle in vehicles]
+
     def get_vehicles(self) -> list:
         response = requests.get(self.url)
         vehicles = response.json()
+
         return [self.vehicle_to_string(vehicle) for vehicle in vehicles]
 
     def vehicle_to_string(self, vehicle) -> list:
@@ -107,4 +118,7 @@ vechile = VehicleManager()
 # print(vechile.filter_vehicles(params={'name': 'BMW'}))
 # print(vechile.get_vehicle(5))
 
+print(vechile.get_vehicles_objects())
 print(vechile.nearest_vehicle(5))
+obj = Vehicle(4, 'BMW', 'X5', 'Red', '2020', '10000', 9.935622, 30.32605)
+print(obj.__dict__)

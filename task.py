@@ -1,6 +1,23 @@
 import math
+from dataclasses import dataclass
 
 import requests
+
+
+@dataclass
+class Vehicle:
+    id: int
+    name: str
+    model: str
+    color: str
+    year: int
+    price: int
+    lat: float
+    lon: float
+
+    def __str__(self):
+        return (f'<Vehicle: {self.name} {self.model} ' +
+                f'{self.color} {self.year} {self.price}>')
 
 
 class VehicleManager:

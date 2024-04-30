@@ -25,7 +25,6 @@ class VehicleManager:
         self.url = url
 
     def vehicle_to_object(self, vehicle_dict):
-        """Начал писать работу с объектами ДОРАБОТАЙ!"""
         return Vehicle(**vehicle_dict)
 
     def get_vehicles_objects(self) -> list[Vehicle]:

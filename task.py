@@ -97,15 +97,18 @@ class VehicleManager:
     def nearest_vehicle(self, target_id: int):
         data = self.get_all_coordinates()
         id_to_data = {d['id']: d for d in data}
-        target_machine = id_to_data[target_id]
-        target_lat = target_machine['lat']
-        target_lon = target_machine['lon']
-        nearest_object = min(
-            data, key=lambda obj: self.distance(
-                (target_lat, target_lon),
-                (obj['lat'], obj['lon']))
-            )
-        return nearest_object
+        try:
+            target_machine = id_to_data[target_id]
+            target_lat = target_machine['lat']
+            target_lon = target_machine['lon']
+            nearest_object = min(
+                data, key=lambda obj: self.distance(
+                    (target_lat, target_lon),
+                    (obj['lat'], obj['lon']))
+                )
+            return nearest_object
+        except KeyError as error:
+            return f'No vehicles found. Id - {error} not found'
 
 
 vechile = VehicleManager('https://test.tspb.su/test-task/vehicles')
@@ -120,5 +123,6 @@ if __name__ == '__main__':
         print(vechile.filter_vehicles({'price': 1000000}))
         print(vechile.filter_vehicles({'model': 'Camry'}))
         print(vechile.nearest_vehicle(4))
+        print(vechile.nearest_vehicle(255))
     else:
         print('Error connecting to server')

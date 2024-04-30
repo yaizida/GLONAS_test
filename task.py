@@ -49,7 +49,8 @@ class VehicleManager:
             for param in vechile.__dict__.values():
                 if param in params.values():
                     vechiles.append(vechile)
-
+        if not vechiles:
+            return 'No vehicles found'
         return vechiles
 
     def get_vehicle(self, id: int) -> Vehicle:
@@ -108,3 +109,16 @@ class VehicleManager:
 
 
 vechile = VehicleManager('https://test.tspb.su/test-task/vehicles')
+
+if __name__ == '__main__':
+    if requests.get(vechile.url).status_code == 200:
+        print(vechile.get_vehicles_objects())
+        print(vechile.get_vehicle(1))
+        print(vechile.filter_vehicles({'name': 'Toyota'}))
+        print(vechile.filter_vehicles({'color': 'red'}))
+        print(vechile.filter_vehicles({'year': 2019}))
+        print(vechile.filter_vehicles({'price': 1000000}))
+        print(vechile.filter_vehicles({'model': 'Camry'}))
+        print(vechile.nearest_vehicle(4))
+    else:
+        print('Error connecting to server')

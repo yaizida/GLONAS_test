@@ -66,12 +66,9 @@ class VehicleManager:
         requests.delete(self.url + '/' + str(id))
 
     def distance(self, coordinates1: tuple, coordinates2: tuple) -> int:
-        lon1, lat1, lon2, lat2 = map(math.radians, [coordinates1[0],
-                                                    coordinates1[1],
-                                                    coordinates2[0],
-                                                    coordinates2[1]
-                                                    ]
-                                     )
+        lon1, lat1, lon2, lat2 = (math.radians(coord) for coord in
+                                  coordinates1 + coordinates2)
+
         # haversine
         dlon = lon2 - lon1
         dlat = lat2 - lat1
